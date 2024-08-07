@@ -4,14 +4,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateQRCode } from '../models/QRCode.js';
 
-export async function sendEmail(req, res) {
-    const { email, course, start } = req.params;
-    const toEmail = email; // Recipient email
+// edit changes
 
-    // Ensure sessionId is an integer
-    if (typeof sessionId !== 'number' || isNaN(sessionId)) {
-        return res.status(400).send('Invalid sessionId. It should be an integer.');
-    }
+export async function sendEmail(email, course, date, hour, minute, location) {
+    const toEmail = email; // Recipient email
 
     // Get environment variables
     const smtpServer = process.env.SMTP_SERVER;
@@ -35,18 +31,16 @@ export async function sendEmail(req, res) {
     const mailOptions = {
         from: fromEmail,
         to: toEmail,
-        subject: 'Hello from Node.js SES SMTP',
-        text: `This is a reminder from TSH to complete your course ${ course } starting from ${ start }`
+        subject: 'Reminder to complete course',
+        text: `Dear ${ staff_name }, this is a reminder from TSH to complete your course ${ course } at the start date ${date} at ${hour}:${minute}. The location is at ${location}.`
     };
 
     try {
         // Send the email
         await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully to the SES simulator');
-        res.status(200).send('Email sent successfully');
+        console.log('Email sent successfully');
     } catch (error) {
         console.error('Failed to send email:', error);
-        res.status(500).send(`Failed to send email: ${error.message}`);
     }
 }
 
