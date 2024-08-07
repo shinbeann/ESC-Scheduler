@@ -1,3 +1,4 @@
+// controllers/emailController.js
 import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -6,6 +7,11 @@ import { generateQRCode } from '../models/QRCode.js';
 export async function sendEmail(req, res) {
     const { email, course, start } = req.params;
     const toEmail = email; // Recipient email
+
+    // Ensure sessionId is an integer
+    if (typeof sessionId !== 'number' || isNaN(sessionId)) {
+        return res.status(400).send('Invalid sessionId. It should be an integer.');
+    }
 
     // Get environment variables
     const smtpServer = process.env.SMTP_SERVER;
@@ -46,6 +52,11 @@ export async function sendEmail(req, res) {
 
 export async function sendEmailWithQRCode(req, res) {
     const { sessionId, trainerEmail, formUrl } = req.body;
+
+    // Ensure sessionId is an integer
+    if (typeof sessionId !== 'number') {
+        return res.status(400).send('Invalid sessionId. It should be an integer.');
+    }
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);

@@ -1,9 +1,9 @@
 import cron from 'node-cron';
-import { sendEmailWithQRCode } from '../controllers/attendanceController.js'; // Adjust the path as needed
-import { pool } from '../controllers/db.js'; // Make sure your database pool is correctly set up
+import { sendEmailWithQRCode } from '../controllers/emailController.js';
+// import { pool } from '../controllers/db.js';
 
 // Function to get training sessions starting the next day and send QR codes
-async function sendQRCodeForUpcomingSessions() {
+export async function sendQRCode() { // Ensure this function is exported
     try {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -11,7 +11,7 @@ async function sendQRCodeForUpcomingSessions() {
 
         // Query to get training sessions starting tomorrow
         const [sessions] = await pool.query(
-            'SELECT trainerEmail, formUrl FROM TrainingSessions WHERE startDate = ?',
+            'SELECT sessionId, trainerEmail, formUrl FROM TrainingSessions WHERE startDate = ?',
             [formattedDate]
         );
 
@@ -19,7 +19,7 @@ async function sendQRCodeForUpcomingSessions() {
         for (const session of sessions) {
             await sendEmailWithQRCode({
                 body: {
-                    // sessionId: session.sessionId,
+                    sessionId: session.sessionId,
                     trainerEmail: session.trainerEmail,
                     formUrl: session.formUrl
                 }
@@ -30,8 +30,7 @@ async function sendQRCodeForUpcomingSessions() {
     }
 }
 
-// Schedule the task to run daily at midnight
-cron.schedule('0 0 * * *', () => {
-    console.log('Running daily job at midnight');
-    sendQRCodeForUpcomingSessions();
+// Schedule task to run at 8am SGT
+cron.schedule('0 8 * * *', sendQRCode, {
+    timezone: 'Asia/Singapore'
 });

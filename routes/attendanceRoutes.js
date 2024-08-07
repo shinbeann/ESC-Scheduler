@@ -1,8 +1,8 @@
-import express from 'express';
-import markAttendance from '../controllers/attendanceController.js';
+// import express from 'express';
+// import markAttendance from '../controllers/attendanceController.js';
 
-const router = express.Router();
+// const router = express.Router();
 
-router.post('/markAttendance', markAttendance);
+// router.post('/mark-attendance', markAttendance);
 
-export default router;
+// export default router;
