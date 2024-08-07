@@ -44,7 +44,7 @@ describe('Scheduler', () => {
         expect(email.attachments[0].filename).toBe('qr_code.png');
     });
 
-    it('should handle errors gracefully', async () => {
+    it('should handle errors', async () => {
         // Mocking an error scenario
         nock('http://localhost:3000')
             .get('/scheduler/test-scheduler')
