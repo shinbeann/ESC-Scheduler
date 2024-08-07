@@ -4,6 +4,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateQRCode } from '../models/QRCode.js';
 
+// edit changes
+
 export async function sendEmail(req, res) {
     const { email, course, start } = req.params;
     const toEmail = email; // Recipient email
