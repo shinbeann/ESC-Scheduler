@@ -9,7 +9,6 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -29,5 +28,9 @@
     "mysql2": "^3.11.0",
     "nodemailer-mock": "^2.0.6",
     "supertest": "^7.0.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "description": ""
 }

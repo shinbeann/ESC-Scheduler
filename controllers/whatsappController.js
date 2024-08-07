@@ -1,20 +1,18 @@
 import Twilio from "twilio/lib/rest/Twilio.js";
 
-export default async function sendWhatsapp(req, res) {
+export async function sendWhatsapp(number, staff_name, course, date, hour, minute, location) {
   try {
     const accountSid = process.env.TWILIO_ACCOUNT_SID;
     const authToken = process.env.TWILIO_AUTH_TOKEN;
     const client = new Twilio(accountSid, authToken);
     const message = await client.messages.create({
-      body: "hellooooo",
+      body: `Dear ${ staff_name }, this is a reminder from TSH to complete your course ${ course } at the start date ${date} at ${hour}:${minute}. The location is at ${location}.`,
       from: 'whatsapp:+14155238886',
-      to: 'whatsapp:+6589116194'
+      to: `whatsapp:+65${ number }`
     });
-    console.log('Message sent:', message.sid);
-    res.json("message sent!!!");
+    console.log('Whatsapp sent:', message.sid);
   } catch (error) {
-    res.json("message did not send");
-    console.error('Error sending message:', error);
+    console.error('Error sending whatsapp:', error);
   }
 };
 
