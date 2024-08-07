@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import './models/scheduler.js';
 import emailRoutes from './routes/emailRoutes.js';
 import whatsappRoutes from './routes/whatsappRoutes.js';
 import attendanceRoutes from './routes/attendanceRoutes.js';
