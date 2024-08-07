@@ -8,21 +8,19 @@ export async function scheduleNotification(req, res) {
         let errors = [];
 
         for (const notification of notif_to_be_scheduled) {
-            const { email, hp_num, staff_name, startDate, course_name, location } = notification;
+            const { staff_email, hp_num, staff_name, startDate, course_name, location } = notification;
             const [date, time] = startDate.split('T');
             const [year, month, day] = date.split('-');
             const [hour, minute] = time.split(':');
             
             try {
                 await sendWhatsapp(hp_num, staff_name, course_name, date, hour, minute, location);
-                console.log(`Whatsapp sent successfully for ${staff_name}.`);
             } catch (error) {
                 console.error(`Error sending Whatsapp for ${staff_name}:`, error.message);
                 errors.push({ name: staff_name, error: error.message });
             }
             try {
-                await sendEmail(email, staff_name, course_name, date, hour, minute, location);
-                console.log(`Email sent successfully for ${staff_name}.`);
+                await sendEmail(staff_email, staff_name, course_name, date, hour, minute, location);
             } catch (error) {
                 console.error(`Error sending Email for ${staff_name}:`, error.message);
                 errors.push({ name: staff_name, error: error.message });

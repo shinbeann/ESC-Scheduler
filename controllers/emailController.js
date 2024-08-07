@@ -6,7 +6,7 @@ import { generateQRCode } from '../models/QRCode.js';
 
 // edit changes
 
-export async function sendEmail(email, course, date, hour, minute, location) {
+export async function sendEmail(email, staff_name, course, date, hour, minute, location) {
     const toEmail = email; // Recipient email
 
     // Get environment variables

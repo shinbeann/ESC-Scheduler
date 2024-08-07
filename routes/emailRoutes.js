@@ -4,7 +4,7 @@ import {sendEmail, sendEmailWithQRCode} from '../controllers/emailController.js'
 
 const router = express.Router();
 
-router.get('/:email/:course/:start', sendEmail);
+// router.get('/:email/:course/:start', sendEmail);
 router.post('/sendQRCode', sendEmailWithQRCode);
 
 
