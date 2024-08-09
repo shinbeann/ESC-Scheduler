@@ -1,18 +1,34 @@
-// models/QRCode.js
-// generate QR Code
 import QRCode from 'qrcode';
 
-export async function generateQRCode(sessionId, filePath) {
+// Function to generate a QR code and save it to a file
+export async function generateQRCode(data, filePath) {
     try {
-        const staticMessage = "attendance taken"; // Static message for QR code
-        await QRCode.toFile(filePath, staticMessage, {
-            color: {
-                dark: '#000000', // Black dots
-                light: '#0000'   // Transparent background
-            }
+        await QRCode.toFile(filePath, data);
+        console.log('QR code generated and saved to file');
+    } catch (error) {
+        console.error('Failed to generate QR code:', error);
+        throw error;
+    }
+}
+
+// Function to decode a QR code from a file and verify its content
+export async function verifyQRCode(filePath, expectedText) {
+    try {
+        const image = await Jimp.read(filePath);
+        const qr = new qrcodeReader();
+        return new Promise((resolve, reject) => {
+            qr.callback = (err, value) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (value.result !== expectedText) {
+                    return reject(new Error(`QR code content mismatch: expected "${expectedText}", got "${value.result}"`));
+                }
+                resolve();
+            };
+            qr.decode(image.bitmap);
         });
-        console.log('QR code generated successfully');
-    } catch (err) {
-        console.error('Failed to generate QR code', err);
+    } catch (error) {
+        throw error;
     }
 }

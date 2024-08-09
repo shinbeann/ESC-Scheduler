@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 import './models/scheduler.js';
 import emailRoutes from './routes/emailRoutes.js';
 //import attendanceRoutes from './routes/attendanceRoutes.js';
-import schedulerRoutes from './routes/scheduler.js';
 //import { connectToDatabase, cleanup } from './controllers/db.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import { sendQRCode } from './models/scheduler.js'; 
 import axios from 'axios';
 import cron from 'node-cron';
 
@@ -24,8 +24,6 @@ app.get('/', (req, res) => {
     res.send('Express App containing API calls for Twilio, SMTP, and QR Code generation');
 });
 app.use('/email', emailRoutes);
-//app.use('/attendance', attendanceRoutes);
-app.use('/scheduler', schedulerRoutes);
 app.use('/notification', notificationRoutes);
 
 // Schedule a cron job to run daily at 12.20 PM

@@ -4,8 +4,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateQRCode } from '../models/QRCode.js';
 
-// edit changes
-
 export async function sendEmail(email, staff_name, course, date, hour, minute, location) {
     const toEmail = email; // Recipient email
 
@@ -45,19 +43,23 @@ export async function sendEmail(email, staff_name, course, date, hour, minute, l
 }
 
 export async function sendEmailWithQRCode(req, res) {
-    const { sessionId, trainerEmail, formUrl } = req.body;
+    const { trainerEmail, request_id  } = req.body;
 
-    // Ensure sessionId is an integer
-    if (typeof sessionId !== 'number') {
-        return res.status(400).send('Invalid sessionId. It should be an integer.');
+    // Validate input
+    if (!trainerEmail || !request_id) {
+        return res.status(400).send('Missing required fields: trainerEmail and request_id.');
     }
+
+    console.log(`Received request to send QR code to: ${trainerEmail}`);
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     const filePath = path.join(__dirname, '..', 'qr_code.png');
 
+    const qrContent = '1';
+
     try {
-        await generateQRCode(`${formUrl}?sessionId=${sessionId}`, filePath);
+        await generateQRCode(qrContent, filePath);
 
         // Get environment variables
         const smtpServer = process.env.SMTP_SERVER;

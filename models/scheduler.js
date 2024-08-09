@@ -1,36 +1,34 @@
 import cron from 'node-cron';
-import { sendEmailWithQRCode } from '../controllers/emailController.js';
-// import { pool } from '../controllers/db.js';
+import axios from 'axios'; // axios for HTTP requests
 
-// Function to get training sessions starting the next day and send QR codes
-export async function sendQRCode() { // Ensure this function is exported
+const TRAINER_ENDPOINT_URL = 'http://localhost:8080/trainer';
+const EMAIL_SEND_ENDPOINT_URL = 'http://localhost:8002/email/sendQRCode';
+
+// Function to send QR code emails for training sessions starting tomorrow
+export async function sendQRCode() {
     try {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        const formattedDate = tomorrow.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+        const formattedDate = tomorrow.toISOString().split('T')[0];
 
-        // Query to get training sessions starting tomorrow
-        const [sessions] = await pool.query(
-            'SELECT sessionId, trainerEmail, formUrl FROM TrainingSessions WHERE startDate = ?',
-            [formattedDate]
-        );
+        // Fetch training sessions starting tomorrow from the database
+        const response = await axios.get(`${TRAINER_ENDPOINT_URL}?startDate=${formattedDate}`);
+        const sessions = response.data;
 
         // Send QR code emails for each session
         for (const session of sessions) {
-            await sendEmailWithQRCode({
-                body: {
-                    sessionId: session.sessionId,
-                    trainerEmail: session.trainerEmail,
-                    formUrl: session.formUrl
-                }
+            await axios.post(EMAIL_SEND_ENDPOINT_URL, {
+                trainerEmail: session.trainerEmail,
+                request_id: session.request_id,
             });
         }
+
     } catch (error) {
         console.error('Error sending QR codes for upcoming sessions:', error);
     }
 }
 
-// Schedule task to run at 8am SGT
+// Schedule the task to run daily at 8 AM SGT
 cron.schedule('0 8 * * *', sendQRCode, {
-    timezone: 'Asia/Singapore'
+    timezone: 'Asia/Singapore',
 });
